@@ -1,0 +1,189 @@
+/* #002642;
+#840032;
+#e59500;
+#e5dada;
+#02040f; */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #f4f3ee;
+  color: var(--text-dark);
+}
+
+h1,
+h2 {
+  text-align: center;
+  margin-top: 0;
+  padding: 0;
+}
+#selectorHolder {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+#scaleHolder {
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+}
+
+select {
+  border: 0;
+  outline: 0;
+  width: 200px;
+  height: 30px;
+  text-align: center;
+  /* color: black; */
+  border-radius: 20px;
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+#noteSelect,
+#modeSelect {
+  margin: 0 0 10px 0;
+}
+
+#getNotes {
+  background-color: #002642;
+  color: #e5dada;
+  font-size: 1.5em;
+  border-radius: 12px;
+  padding: 4px;
+  margin: 0 0 20px 0;
+}
+
+.individualNotes {
+  border: 2px solid black;
+  padding: 6px;
+  border-radius: 10px;
+  white-space: nowrap;
+  transition: color 300ms;
+  margin-bottom: 0px;
+}
+.chordsGreen {
+  color: green;
+}
+.chordsRed {
+  color: red;
+}
+.chordsBlue {
+  color: blue;
+}
+.chordsPurple {
+  color: purple;
+}
+#colorLegend {
+  font-size: 1.5em;
+  margin: 0 auto;
+  width: 75%;
+  display: flex;
+  flex-direction: row;
+}
+#legend {
+  display: none;
+}
+
+.colorWords {
+  width: 25%;
+  margin: 2px 2px;
+}
+
+.legendColors {
+  padding: 4px;
+  border: 1px solid black;
+  border-radius: 5px;
+  color: white;
+}
+
+#greenLegend {
+  background-color: green;
+}
+#redLegend {
+  background: red;
+}
+#blueLegend {
+  background-color: blue;
+}
+#purpleLegend {
+  background-color: purple;
+}
+h3 {
+  text-align: center;
+  margin: 8px 0;
+}
+
+#pianoContainer {
+  display: flex;
+  justify-content: center;
+}
+.key {
+}
+.white {
+  width: 50px;
+  height: 200px;
+  background-color: white;
+  border: 1px solid #333;
+}
+.white.active {
+  background-color: #ccc;
+}
+.black {
+  width: 30px;
+  height: 120px;
+  background-color: black;
+  margin-left: -15px;
+  margin-right: -15px;
+  z-index: 2;
+  border: 2px solid black;
+}
+.black.active {
+  background-color: #333;
+}
+.highlightGreen {
+  background-color: rgb(9, 194, 9);
+}
+
+.highlightYellow {
+  background-color: rgb(232, 232, 44);
+}
+
+@media (min-width: 800px) {
+  h1,
+  h2 {
+    margin: 25px 0;
+  }
+  #scaleHolder {
+    font-size: 2em;
+    width: 80%;
+    margin: 50px auto 5px;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  #pianoContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+  }
+  #legend {
+    display: flex;
+    justify-content: center;
+    width: 70%;
+    margin: 0 auto;
+  }
+}
+@media (min-width: 1000px) {
+  #scaleHolder {
+    font-size: 3em;
+    width: 70%;
+  }
+}

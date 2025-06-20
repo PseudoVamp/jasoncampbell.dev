@@ -1,0 +1,25 @@
+{
+  "name": "pseudovamp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "engines": {
+    "node": "18.x"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.3.0-alpha1",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "http-server": "^14.1.1",
+    "node": "^21.2.0",
+    "nodemon": "^3.1.1",
+    "stable": "^0.1.8",
+    "three": "^0.160.0"
+  }
+}

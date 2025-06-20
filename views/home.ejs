@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!-- this includes the head partial html file to load here, so you dont duplicate code all over the place -->
+<!--  the - from ejs renders any html in the document, the = sign does not -->
+<head>
+  <%- include('partials/head')%>
+  <link rel="stylesheet" href="/css/home.css" />
+</head>
+<html lang="en">
+  <body>
+    <%- include('partials/navbar')%>
+
+    <section id="firstSection">
+      <div id="randomSquares">
+        <h1 class="hidden" id="myName">
+          Hi! I'm <span id="name">Jason.</span>
+        </h1>
+      </div>
+
+      <div class="curve1">
+        <svg
+          data-name="Layer 1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+            class="shape-fill"
+          ></path>
+        </svg>
+      </div>
+    </section>
+
+    <section id="secondSection">
+      <h2 class="hidden">I'm working on my web development skills!</h2>
+      <p class="hidden">The current "stack" I'm working with:</p>
+
+      <div id="icons48">
+        <div class="hidden">
+          <img src="/icons/html/html48.png" alt="html" />
+          <span class="iconText"> HTML</span>
+        </div>
+
+        <div class="hidden">
+          <img src="/icons/css/css48.png" alt="css" />
+          <span class="iconText">CSS</span>
+        </div>
+
+        <div class="hidden">
+          <img src="/icons/js/js48.png" alt="javascript" />
+          <span class="iconText">Javascript</span>
+        </div>
+
+        <div class="hidden">
+          <img src="/icons/node/node48.png" alt="node" />
+          <span class="iconText">NodeJS</span>
+        </div>
+
+        <div class="hidden">
+          <img src="/icons/mongo/mongo48.png" alt="mongo" />
+          <span class="iconText">MongoDB</span>
+        </div>
+      </div>
+
+      <div id="icons96">
+        <div class="hidden">
+          <img src="/icons/html/html96.png" alt="html" />
+          <span class="iconText"> HTML</span>
+        </div>
+
+        <div class="hidden">
+          <img src="/icons/css/css96.png" alt="css" />
+          <span class="iconText">CSS</span>
+        </div>
+
+        <div class="hidden">
+          <img src="/icons/js/js96.png" alt="javascript" />
+          <span class="iconText">Javascript</span>
+        </div>
+
+        <div class="hidden">
+          <img src="/icons/node/node96.png" alt="node" />
+          <span class="iconText">NodeJS</span>
+        </div>
+
+        <div class="hidden">
+          <img src="/icons/mongo/mongo96.png" alt="mongo" />
+          <span class="iconText">MongoDB</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="thirdSection">
+      <div class="curve2">
+        <svg
+          data-name="Layer 1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+            class="shape-fill"
+          ></path>
+        </svg>
+      </div>
+      <h3 class="hidden">
+        <a class="contactLink" href="mailto:jason@guitarjason.com"
+          >Contact Me</a
+        >
+        if you need a website built
+      </h3>
+    </section>
+
+    <script src="/js/home.js"></script>
+  </body>
+</html>

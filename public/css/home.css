@@ -1,0 +1,175 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  /* used for debugging */
+  /* outline: 1px solid green; */
+  /* background: rgb(0 100 0 /0.1); */
+}
+
+body {
+  min-height: 200vh;
+}
+
+section {
+  height: 90vh;
+  padding: 0px 20vw;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#randomSquares {
+}
+.allSquares {
+  position: absolute;
+  z-index: 0;
+  border-radius: 10%;
+  transition: right 0.5s ease-in-out, top 0.5s ease-in-out;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.12),
+    0 4px 4px rgba(0, 0, 0, 0.16), 0 8px 8px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  text-shadow: 1px 1px 2px var(--bg-white);
+  font-size: 2.5rem;
+  font-weight: 500;
+  position: absolute;
+  z-index: 1;
+  top: 45vh;
+  left: 40vw;
+  color: var(--text-dark);
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.8rem;
+}
+#name {
+  font-size: 3rem;
+  font-weight: var(--text-lg);
+}
+
+#firstSection {
+}
+#secondSection {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+  display: flex;
+  flex-direction: column;
+}
+#thirdSection {
+  color: var(--text-dark);
+}
+
+/* hidden and show as you scroll in*/
+.hidden {
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateX(-100%);
+  transition: all 1s;
+}
+.show {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateX(0);
+}
+
+.icons48 {
+  display: none;
+}
+
+#icons96,
+#icons48 {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+}
+#icons96 div,
+#icons48 div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#icons96 img {
+  margin-left: 10px;
+  max-width: 96px;
+  max-height: 96px;
+}
+#icons48 span {
+  font-size: 0.8rem;
+}
+#icons48 img {
+  margin-left: 10px;
+  max-width: 48px;
+  max-height: 48px;
+}
+
+.iconText {
+  font-weight: var(--text-md);
+}
+
+.contactLink {
+  text-decoration: none;
+}
+
+.curve1 {
+  margin-bottom: -1px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(180deg);
+}
+
+.curve1 svg {
+  position: relative;
+  display: block;
+  width: calc(150% + 1.3px);
+  height: 100px;
+}
+
+.curve1 .shape-fill {
+  fill: var(--bg-dark);
+}
+
+.curve2 {
+  margin-top: -1px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.curve2 svg {
+  position: relative;
+  display: block;
+  width: calc(150% + 1.3px);
+  height: 100px;
+}
+
+.curve2 .shape-fill {
+  fill: var(--bg-dark);
+}
+
+@media screen and (max-width: 700px) {
+  #icons96 {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 700px) {
+  #icons48 {
+    display: none;
+  }
+}

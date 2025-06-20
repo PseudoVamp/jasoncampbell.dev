@@ -1,0 +1,69 @@
+/* curve maker site https://www.shapedivider.app/ */
+/* color generator site https://coolors.co/ */
+/* icons grabbed from https://icons8.com/ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  font-size: 16px;
+
+  --bg-nav: #293269;
+  --bg-dark: #3b457d;
+  --bg-light: #fef9ef;
+  --bg-0: #ffbe0b;
+  --bg-1: #fb5607;
+  --bg-2: #ff006e;
+  --bg-3: #8338ec;
+  --bg-4: #3a86ff;
+  --bg-5: #06d6a0;
+
+  --text-light: #ebe7df;
+  --text-dark: #071c28;
+  --text-main: "Rubik", sans-serif;
+  --text-sm: 300;
+  --text-md: 500;
+  --text-lg: 700;
+  --text-xlg: 900;
+}
+
+body {
+  background-color: var(--bg-white);
+  font-family: var(--text-main);
+  font-weight: var(--text-md);
+  color: var(--text-dark);
+  overflow-x: hidden;
+}
+
+nav {
+  z-index: 1;
+  display: flex;
+  justify-content: space-evenly;
+  position: relative;
+  background-color: var(--bg-nav);
+  padding: 18px;
+}
+
+nav a {
+  color: var(--text-light);
+  font-size: 1rem;
+  font-weight: var(--text-md);
+  text-decoration: none;
+  transition: all 0.4s ease-in-out 0s;
+}
+
+nav a:hover {
+  box-shadow: inset 300px 0 0 0 var(--text-light);
+  color: var(--text-dark);
+}
+
+@media screen and (max-width: 700px) {
+  nav a {
+    font-size: 0.8rem;
+  }
+}
