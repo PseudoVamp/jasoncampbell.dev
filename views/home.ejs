@@ -1,117 +1,169 @@
 <!DOCTYPE html>
-<!-- this includes the head partial html file to load here, so you dont duplicate code all over the place -->
-<!--  the - from ejs renders any html in the document, the = sign does not -->
+<html lang="en">
 <head>
   <%- include('partials/head')%>
   <link rel="stylesheet" href="/css/home.css" />
 </head>
-<html lang="en">
-  <body>
-    <%- include('partials/navbar')%>
+<body>
+  <%- include('partials/navbar')%>
 
-    <section id="firstSection">
-      <div id="randomSquares">
-        <h1 class="hidden" id="myName">
-          Hi! I'm <span id="name">Jason.</span>
-        </h1>
-      </div>
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>Hi! I'm <span id="name">Jason.</span></h1>
+      <p>Laboratory Professional & Code Enthusiast</p>
+    </div>
+  </section>
 
-      <div class="curve1">
-        <svg
-          data-name="Layer 1"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
-            class="shape-fill"
-          ></path>
-        </svg>
-      </div>
-    </section>
-
-    <section id="secondSection">
-      <h2 class="hidden">I'm working on my web development skills!</h2>
-      <p class="hidden">The current "stack" I'm working with:</p>
-
-      <div id="icons48">
-        <div class="hidden">
-          <img src="/icons/html/html48.png" alt="html" />
-          <span class="iconText"> HTML</span>
-        </div>
-
-        <div class="hidden">
-          <img src="/icons/css/css48.png" alt="css" />
-          <span class="iconText">CSS</span>
-        </div>
-
-        <div class="hidden">
-          <img src="/icons/js/js48.png" alt="javascript" />
-          <span class="iconText">Javascript</span>
-        </div>
-
-        <div class="hidden">
-          <img src="/icons/node/node48.png" alt="node" />
-          <span class="iconText">NodeJS</span>
-        </div>
-
-        <div class="hidden">
-          <img src="/icons/mongo/mongo48.png" alt="mongo" />
-          <span class="iconText">MongoDB</span>
+  <div class="projects-wrapper">
+    <div class="project-card">
+      <div class="project-visual">
+        <div class="floating-accent"></div>
+        <div class="project-image-container" onclick="window.open('https://yelp-camp-web-dev-course-5hz0pqnsm-pseudovamp.vercel.app/', '_blank')">
+          <img src="/pics/yelpcampThumbnail.png" alt="YelpCamp">
+          <div class="project-overlay">View Project</div>
         </div>
       </div>
-
-      <div id="icons96">
-        <div class="hidden">
-          <img src="/icons/html/html96.png" alt="html" />
-          <span class="iconText"> HTML</span>
+      <div class="project-info">
+        <span class="project-category">Full Stack</span>
+        <h2 class="project-title">YelpCamp</h2>
+        <p class="project-description">
+          A campground review site where people can share and rate their favorite spots. 
+          You can create an account, add photos, and see what others think about different campgrounds. Created while following Colt Steele's Udemy course.
+        </p>
+        <div class="project-features">
+          <span class="feature-tag">User Auth</span>
+          <span class="feature-tag">Image Upload</span>
+          <span class="feature-tag">Interactive Maps</span>
+          <span class="feature-tag">Reviews & Ratings</span>
         </div>
+        <a href="https://yelp-camp-web-dev-course-5hz0pqnsm-pseudovamp.vercel.app/" target="_blank" class="project-link">View Platform</a>
+      </div>
+    </div>
 
-        <div class="hidden">
-          <img src="/icons/css/css96.png" alt="css" />
-          <span class="iconText">CSS</span>
-        </div>
-
-        <div class="hidden">
-          <img src="/icons/js/js96.png" alt="javascript" />
-          <span class="iconText">Javascript</span>
-        </div>
-
-        <div class="hidden">
-          <img src="/icons/node/node96.png" alt="node" />
-          <span class="iconText">NodeJS</span>
-        </div>
-
-        <div class="hidden">
-          <img src="/icons/mongo/mongo96.png" alt="mongo" />
-          <span class="iconText">MongoDB</span>
+    <div class="project-card">
+      <div class="project-visual">
+        <div class="floating-accent"></div>
+        <div class="project-image-container" onclick="window.open('https://pseudovamp.itch.io/cat-stuff', '_blank')">
+          <img src="/pics/catStuffThumbnail.png" alt="Cat Stuff Game">
+          <div class="project-overlay">Play Game</div>
         </div>
       </div>
-    </section>
-
-    <section id="thirdSection">
-      <div class="curve2">
-        <svg
-          data-name="Layer 1"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
-            class="shape-fill"
-          ></path>
-        </svg>
+      <div class="project-info">
+        <span class="project-category">Game Development</span>
+        <h2 class="project-title">Cat Stuff</h2>
+        <p class="project-description">
+          A platformer I made in Godot using GDScript where you play as a cat collecting yarn balls and fish while dodging rats. 
+          Features tricky levels and a timer for speedrun challenges.
+        </p>
+        <div class="project-features">
+          <span class="feature-tag">Platformer</span>
+          <span class="feature-tag">Godot Engine</span>
+          <span class="feature-tag">Level Design</span>
+          <span class="feature-tag">Project Structure</span>
+        </div>
+        <a href="https://pseudovamp.itch.io/cat-stuff" target="_blank" class="project-link">Play Game</a>
       </div>
-      <h3 class="hidden">
-        <a class="contactLink" href="mailto:jason@guitarjason.com"
-          >Contact Me</a
-        >
-        if you need a website built
-      </h3>
-    </section>
+    </div>
 
-    <script src="/js/home.js"></script>
-  </body>
+    <div class="project-card">
+      <div class="project-visual">
+        <div class="floating-accent"></div>
+        <div class="project-image-container" onclick="window.open('/musicNotes', '_blank')">
+          <img src="/pics/scaleThumbnail.png" alt="Music Scales Project">
+          <div class="project-overlay">Click to Explore</div>
+        </div>
+      </div>
+      <div class="project-info">
+        <span class="project-category">Web Application</span>
+        <h2 class="project-title">Visual Music Scales</h2>
+        <p class="project-description">
+          A tool that helps you visualize music scales and how chords work together. Select different scales and modes to see which notes comprise each one.
+        </p>
+        <div class="project-features">
+          <span class="feature-tag">Piano Display</span>
+          <span class="feature-tag">Scale Visualization</span>
+          <span class="feature-tag">Chord Theory</span>
+          <span class="feature-tag">Multiple Modes</span>
+        </div>
+        <a href="/musicNotes" class="project-link">Explore Tool</a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-visual">
+        <div class="floating-accent"></div>
+        <div class="project-image-container" onclick="window.open('/picPage', '_self')">
+          <img src="https://res.cloudinary.com/dijsqclbt/image/upload/v1674954780/picPage/curvyTree_xkzgy1.jpg" alt="Photography">
+          <div class="project-overlay">Browse Gallery</div>
+        </div>
+      </div>
+      <div class="project-info">
+        <span class="project-category">Visual Art</span>
+        <h2 class="project-title">Photography Collection</h2>
+        <p class="project-description">
+          Some photos I've taken while hiking and exploring different places. Features interesting trees, landscapes, and quiet moments in nature.
+        </p>
+        <div class="project-features">
+          <span class="feature-tag">Photography</span>
+          <span class="feature-tag">Nature</span>
+          <span class="feature-tag">Exploration</span>
+          <span class="feature-tag">Landscape</span>
+        </div>
+        <a href="/picPage" class="project-link">View Gallery</a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-visual">
+        <div class="floating-accent"></div>
+        <div class="project-image-container" onclick="window.open('https://pseudovamp.itch.io/kill-all-zombies', '_blank')">
+          <img src="/pics/zombieThumbnail.png" alt="Kill All Zombies Game">
+          <div class="project-overlay">Play Game</div>
+        </div>
+      </div>
+      <div class="project-info">
+        <span class="project-category">Game Development</span>
+        <h2 class="project-title">Kill All Zombies!</h2>
+        <p class="project-description">
+          A zombie shooter game I built in Godot. Pretty straightforward - shoot zombies and 
+          try not to die. It gets pretty hectic once the big zombie shows up.
+        </p>
+        <div class="project-features">
+          <span class="feature-tag">Action</span>
+          <span class="feature-tag">Survival</span>
+          <span class="feature-tag">Godot Engine</span>
+          <span class="feature-tag">Shooter</span>
+        </div>
+        <a href="https://pseudovamp.itch.io/kill-all-zombies" target="_blank" class="project-link">Play Game</a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-visual">
+        <div class="floating-accent"></div>
+        <div class="project-image-container" onclick="window.open('/survival', '_blank')">
+          <img src="/pics/survivalGameThumbnail.png" alt="Survival Game">
+          <div class="project-overlay">Play Game</div>
+        </div>
+      </div>
+      <div class="project-info">
+        <span class="project-category">Interactive Game</span>
+        <h2 class="project-title">Alien Survival</h2>
+        <p class="project-description">
+          A simple text based choose-your-own-adventure story where you're stuck on an alien planet. 
+          Every choice changes what happens next, and most (maybe all?) of them lead to you dying in creative ways.
+        </p>
+        <div class="project-features">
+          <span class="feature-tag">Branching Story</span>
+          <span class="feature-tag">Multiple Endings</span>
+          <span class="feature-tag">Choice-Driven</span>
+          <span class="feature-tag">Impossible</span>
+        </div>
+        <a href="/survival" class="project-link">Start Adventure</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/home.js"></script>
+</body>
 </html>

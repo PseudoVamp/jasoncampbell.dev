@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head')%>
+  <link rel="stylesheet" href="/css/contact.css" />
+</head>
+<body>
+  <%- include('partials/navbar')%>
+
+  <div class="contact-container">
+    <h1>Get In Touch</h1>
+    <p class="contact-subtitle">Send me a message and I'll get back to you soon.</p>
+    
+    <form class="contact-form" action="/contact" method="POST">
+      <div class="form-group">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Your Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="message">Your Message</label>
+        <textarea id="message" name="message" rows="6" required placeholder="Tell me about your project, ask a question, or just say hello!"></textarea>
+      </div>
+      
+      <button type="submit" class="send-button">
+        <span>Send Message</span>
+        <span class="button-arrow">→</span>
+      </button>
+    </form>
+
+    <div class="success-message" id="successMessage" style="display: <%= typeof query !== 'undefined' && query.success ? 'block' : 'none' %>;">
+      <h3>Message Sent!</h3>
+      <p>Thanks for reaching out! I'll get back to you soon.</p>
+    </div>
+
+    <div class="error-message" id="errorMessage" style="display: <%= typeof query !== 'undefined' && query.error ? 'block' : 'none' %>;">
+      <h3>Oops! Something went wrong.</h3>
+      <p>Please try again or email me directly.</p>
+    </div>
+  </div>
+
+  <script src="/js/contact.js"></script>
+</body>
+</html>
