@@ -221,15 +221,15 @@ body {
   border: 2px solid var(--bg-3);
   border-radius: 20px;
   font-size: 0.9rem;
-  color: var(--bg-3);
+  color: var(--text-dark);
   font-weight: var(--text-md);
 }
 
-.project-card:nth-child(2) .feature-tag { border-color: var(--bg-4); color: var(--bg-4); }
-.project-card:nth-child(3) .feature-tag { border-color: var(--bg-0); color: var(--bg-0); }
-.project-card:nth-child(4) .feature-tag { border-color: var(--bg-5); color: var(--bg-5); }
-.project-card:nth-child(5) .feature-tag { border-color: var(--bg-3); color: var(--bg-3); }
-.project-card:nth-child(6) .feature-tag { border-color: var(--bg-1); color: var(--bg-1); }
+.project-card:nth-child(2) .feature-tag { border-color: var(--bg-4); }
+.project-card:nth-child(3) .feature-tag { border-color: var(--bg-0); }
+.project-card:nth-child(4) .feature-tag { border-color: var(--bg-5); }
+.project-card:nth-child(5) .feature-tag { border-color: var(--bg-3); }
+.project-card:nth-child(6) .feature-tag { border-color: var(--bg-1); }
 
 .project-link {
   display: inline-flex;
