@@ -4,6 +4,9 @@ const express = require("express");
 //Imports the rate limit for my email form, so I don't get spammm
 const rateLimit = require('express-rate-limit');
 
+//Imports the express validator, for ensuring emails are legitimate (name length, blocks scripts ect)
+const { body, validationResult } = require('express-validator');
+
 // ignore env file
 require('dotenv').config();
 
@@ -28,6 +31,7 @@ const transporter = nodemailer.createTransport({
 //use express-rate-limit to block spam emails, 2 sends per ip, per 15 minute period
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minute window
+  // windowMs: 4 * 1000, // 15 second window (for testing)
   max: 2, //number of possible sends
   message: {
     success: false,
@@ -36,6 +40,29 @@ const contactLimiter = rateLimit({
   standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: false, // Disable old X-RateLimit-* headers
 });
+//Validation for the email form
+const validateContactForm = [
+  body('name')
+    .trim() // Remove extra spaces
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Name must be between 1 and 100 characters')
+    .matches(/^[a-zA-Z\s\-'\.]+$/)
+    .withMessage('Name can only contain letters, spaces, hyphens, apostrophes, and periods'),
+  
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Please provide a valid email address')
+    .normalizeEmail() // Converts to lowercase, removes dots from Gmail addresses
+    .isLength({ max: 254 })
+    .withMessage('Email address is too long'),
+  
+  body('message')
+    .trim()
+    .isLength({ min: 10, max: 5000 })
+    .withMessage('Message must be between 10 and 5000 characters')
+    .escape() // Converts HTML characters like < > to safe versions
+];
 
 //tells the app to use extended javascript
 //need to install with npm, and then express will require it so you dont have to
@@ -92,10 +119,31 @@ app.get("/contact", (req, res) => {
   res.render("contact.ejs", { query: req.query });
 });
 
-// Contact form POST route (handles both regular and AJAX submissions)
-app.post("/contact", contactLimiter, (req, res) => {
+//Contact form POST route (handles both regular and AJAX submissions)
+app.post("/contact", contactLimiter, validateContactForm, (req, res) => {
+  //Check if validation found any errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    //If there are validation errors, return them
+    return res.status(400).json({
+      success: false,
+      errors: errors.array()
+    });
+  }
+
+  //if 'website' field has any value, it's a bot
+if (req.body.website) {
+  console.log('Bot detected - honeypot field filled:', req.body.website);
+  // Silently reject (don't tell the bot why it failed)
+  return res.json({ 
+    success: true,
+    message: 'Email sent successfully!' 
+  });
+}
+
   const { name, email, message } = req.body;
-  // Create email content
+  
+  //Create email content and nice formatting (now with validated and sanitized data)
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: process.env.EMAIL_USER,
@@ -118,33 +166,27 @@ ${message}
     `
   };
 
-  // Send the email
+  // Send the email if everything checks out
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log('Error sending email:', error);
-      
-      // Check if it's an AJAX request
-      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
-        res.status(500).json({ success: false, error: 'Failed to send email' });
-      } else {
-        res.redirect('/contact?error=true');
-      }
+      return res.status(500).json({ 
+        success: false, 
+        error: 'Failed to send email' 
+      });
     } else {
       console.log('Email sent successfully:', info.response);
-      
-      // Check if it's an AJAX request
-      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
-        res.json({ success: true });
-      } else {
-        res.redirect('/contact?success=true');
-      }
+      return res.json({ 
+        success: true,
+        message: 'Email sent successfully!'
+      });
     }
   });
 });
 
 
 //sets the node script.js command to open a server listening on the specified port
-//lets you go to localhost:3000 to load the app (requires node script.js running)
+//lets you go to localhost:3000 to load the app (requires node app.js running)
 app.listen(3000, () => {
   console.log("listening on port 3000");
 });

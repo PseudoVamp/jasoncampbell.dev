@@ -26,7 +26,8 @@
         <label for="message">Your Message</label>
         <textarea id="message" name="message" rows="6" required placeholder="Tell me about your project, ask a question, or just say hello!"></textarea>
       </div>
-      
+      <!-- screw you bots -->
+      <input type="text" name="website" style="display: none;" tabindex="-1" autocomplete="off">
       <button type="submit" class="send-button">
         <span>Send Message</span>
         <span class="button-arrow">→</span>
@@ -40,7 +41,16 @@
 
     <div class="error-message" id="errorMessage" style="display: <%= typeof query !== 'undefined' && query.error ? 'block' : 'none' %>;">
       <h3>Oops! Something went wrong.</h3>
-      <p>Please try again later. (There is a limit of sending 2 emails per 15 minutes.)</p>
+      <% if (typeof query !== 'undefined' && query.error === 'validation') { %>
+        <p>Please check your form data:</p>
+        <ul style="text-align: left; margin-top: 10px;">
+          <li>Name must be 1-100 characters and contain only letters, spaces, hyphens, apostrophes, and periods</li>
+          <li>Email must be a valid email address</li>
+          <li>Message must be 10-5000 characters long</li>
+        </ul>
+      <% } else { %>
+        <p>Please try again later. (There is a limit of sending 2 emails per 4 seconds for testing.)</p>
+      <% } %>
     </div>
   </div>
 
