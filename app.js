@@ -13,6 +13,9 @@ require('dotenv').config();
 //for sending emails directly from the website contact form
 const nodemailer = require('nodemailer');
 
+//Imports CORS to control which domains can access the contact form
+const cors = require('cors');
+
 //path file built in with NODE, lets you set file/dir paths
 const path = require("path");
 
@@ -63,6 +66,35 @@ const validateContactForm = [
     .withMessage('Message must be between 10 and 5000 characters')
     .escape() // Converts HTML characters like < > to safe versions
 ];
+
+//CORS configuration - only allow requests from my domains
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests from your domains and localhost for development
+    const allowedOrigins = [
+      'https://jasoncampbell.dev',
+      'https://www.jasoncampbell.dev',
+      'http://localhost:3000',
+      'http://localhost:3001'
+    ];
+    
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked request from:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Allow cookies if needed
+  methods: ['GET', 'POST'], // Only allow these HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'] // Only allow these headers
+};
+
+//Apply CORS to all routes
+app.use(cors(corsOptions));
 
 //tells the app to use extended javascript
 //need to install with npm, and then express will require it so you dont have to
