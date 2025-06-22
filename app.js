@@ -1,6 +1,9 @@
 //Imports express to use in the project
 const express = require("express");
 
+//Imports the rate limit for my email form, so I don't get spammm
+const rateLimit = require('express-rate-limit');
+
 // ignore env file
 require('dotenv').config();
 
@@ -21,6 +24,17 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   }
+});
+//use express-rate-limit to block spam emails, 2 sends per ip, per 15 minute period
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minute window
+  max: 2, //number of possible sends
+  message: {
+    success: false,
+    error: 'Too many contact form submissions from this IP. Please try again in 15 minutes.'
+  },
+  standardHeaders: true, // Return rate limit info in headers
+  legacyHeaders: false, // Disable old X-RateLimit-* headers
 });
 
 //tells the app to use extended javascript
@@ -79,9 +93,8 @@ app.get("/contact", (req, res) => {
 });
 
 // Contact form POST route (handles both regular and AJAX submissions)
-app.post("/contact", (req, res) => {
+app.post("/contact", contactLimiter, (req, res) => {
   const { name, email, message } = req.body;
-  
   // Create email content
   const mailOptions = {
     from: process.env.EMAIL_USER,
