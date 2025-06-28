@@ -108,6 +108,11 @@ app.set("views", path.join(__dirname, "/views"));
 //requires access to "path"
 app.use(express.static(path.join(__dirname, "public")));
 
+//tells express to serve the Godot game files (wasm, js, pck) from the webHangout folder
+//when someone visits /webHangout/filename, it will look in public/webHangout/ for that file
+//this keeps the game assets separate from the main website assets
+app.use('/webHangout', express.static(path.join(__dirname, "public/webHangout")));
+
 //Parse form data:
 app.use(express.urlencoded({ extended: true }));
 
