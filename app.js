@@ -73,9 +73,7 @@ const corsOptions = {
     // Allow requests from your domains and localhost for development
     const allowedOrigins = [
       'https://jasoncampbell.dev',
-      'https://www.jasoncampbell.dev',
-      'http://localhost:3000',
-      'http://localhost:3001'
+      'https://www.jasoncampbell.dev'
     ];
     
     // Allow requests with no origin (mobile apps, Postman, etc.)
