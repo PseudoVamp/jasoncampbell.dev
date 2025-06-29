@@ -17,7 +17,7 @@ const nodemailer = require('nodemailer');
 //Imports CORS to control which domains can access the contact form
 const cors = require('cors');
 
-// ADD THIS: Import fetch for making HTTP requests to your auth server
+// Import fetch for making HTTP requests to your auth server
 const fetch = require('node-fetch');
 
 //path file built in with NODE, lets you set file/dir paths
@@ -98,7 +98,7 @@ const validateAuthForm = [
     .withMessage('Password is required')
 ];
 
-//CORS configuration - only allow requests from my domains
+//CORS configuration - FIXED for same-origin requests
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests from your domains and localhost for development
@@ -107,18 +107,22 @@ const corsOptions = {
       'https://www.jasoncampbell.dev'
     ];
     
-    // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin) return callback(null, true);
+    // IMPORTANT: Allow requests with no origin (same-origin requests, mobile apps, etc.)
+    if (!origin) {
+      console.log('✅ Allowing request with no origin (same-origin)');
+      return callback(null, true);
+    }
     
     if (allowedOrigins.includes(origin)) {
+      console.log('✅ Allowing request from:', origin);
       callback(null, true);
     } else {
-      console.log('CORS blocked request from:', origin);
+      console.log('❌ CORS blocked request from:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true, // Allow cookies if needed
-  methods: ['GET', 'POST'], // Only allow these HTTP methods
+  methods: ['GET', 'POST', 'OPTIONS'], // Added OPTIONS for preflight
   allowedHeaders: ['Content-Type', 'Authorization'] // Only allow these headers
 };
 
@@ -193,7 +197,7 @@ app.get("/contact", (req, res) => {
   res.render("contact.ejs", { query: req.query });
 });
 
-// New WebHangout game page route
+// WebHangout game page route
 app.get("/webHangout", (req, res) => {
   res.render("webHangout.ejs");
 });
@@ -207,6 +211,7 @@ app.post("/api/login", authLimiter, validateAuthForm, async (req, res) => {
   // Check if validation found any errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log('❌ Login validation failed:', errors.array());
     return res.status(400).json({
       success: false,
       errors: errors.array()
@@ -215,6 +220,7 @@ app.post("/api/login", authLimiter, validateAuthForm, async (req, res) => {
 
   try {
     console.log('🔐 Proxying login request for:', req.body.username);
+    console.log('🔍 Request origin:', req.headers.origin || 'no origin');
     
     // Forward request to your auth server
     const response = await fetch('https://backend.jasoncampbell.dev:50003/login', {
@@ -251,6 +257,7 @@ app.post("/api/register", authLimiter, validateAuthForm, async (req, res) => {
   // Check if validation found any errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log('❌ Registration validation failed:', errors.array());
     return res.status(400).json({
       success: false,
       errors: errors.array()
@@ -259,6 +266,7 @@ app.post("/api/register", authLimiter, validateAuthForm, async (req, res) => {
 
   try {
     console.log('📝 Proxying registration request for:', req.body.username);
+    console.log('🔍 Request origin:', req.headers.origin || 'no origin');
     
     // Forward request to your auth server
     const response = await fetch('https://backend.jasoncampbell.dev:50003/register', {
@@ -292,6 +300,7 @@ app.post("/api/register", authLimiter, validateAuthForm, async (req, res) => {
 
 // Health check route for the auth proxy
 app.get("/api/auth-status", (req, res) => {
+  console.log('🔍 Auth status check from origin:', req.headers.origin || 'no origin');
   res.json({
     status: "ok",
     message: "WebHangout authentication proxy is running",
@@ -373,5 +382,6 @@ ${message}
 app.listen(3000, () => {
   console.log("listening on port 3000");
   console.log("🎮 WebHangout authentication proxy enabled");
-  console.log("🔗 Auth endpoints: /api/login, /api/register");
+  console.log("🔗 Auth endpoints: /api/login, /api/register, /api/auth-status");
+  console.log("🌐 Game available at: /webHangout");
 });
