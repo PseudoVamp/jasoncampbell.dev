@@ -341,38 +341,45 @@
     <script>
         const engine = new Engine({"args":[],"canvasResizePolicy":0,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":117456,"index.wasm":52126319},"focusCanvas":true,"gdextensionLibs":[]});
         const canvas = document.getElementById('canvas');
+        const gameContainer = document.getElementById('gameContainer');
         
-        // Set canvas to exact native resolution
-        canvas.width = 1280;
-        canvas.height = 720;
+        function updateCanvasSize() {
+            // Get the actual container size
+            const containerRect = gameContainer.getBoundingClientRect();
+            const containerWidth = gameContainer.offsetWidth;
+            const containerHeight = gameContainer.offsetHeight;
+            
+            // Set canvas to match container size exactly
+            canvas.width = containerWidth;
+            canvas.height = containerHeight;
+            canvas.style.width = containerWidth + 'px';
+            canvas.style.height = containerHeight + 'px';
+            canvas.style.position = 'absolute';
+            canvas.style.top = '0px';
+            canvas.style.left = '0px';
+            canvas.style.transform = 'none';
+            
+            console.log(`Canvas resized to: ${containerWidth}×${containerHeight}`);
+        }
         
-        // Start the game first, then apply fixes
+        // Start the game with responsive sizing
         engine.startGame({
             canvas: canvas,
             focusCanvas: true
         }).then(() => {
-            console.log('Game loaded at fixed 1280x720 resolution');
+            console.log('Game loaded with responsive scaling');
             
-            // Apply the fix after game is running
-            const maintainCanvasSize = () => {
-                // Only fix the style properties, don't touch canvas width/height
-                canvas.style.width = '1280px';
-                canvas.style.height = '720px';
-                canvas.style.position = 'absolute';
-                canvas.style.top = '0px';
-                canvas.style.left = '0px';
-                canvas.style.transform = 'none';
-            };
+            // Set initial size
+            updateCanvasSize();
             
-            // Apply initial fix
-            setTimeout(maintainCanvasSize, 100);
-            
-            // Handle window resize events - but let Godot initialize first
-            let gameInitialized = true;
+            // Update size when window resizes
             window.addEventListener('resize', () => {
-                if (gameInitialized) {
-                    setTimeout(maintainCanvasSize, 10);
-                }
+                setTimeout(updateCanvasSize, 100);
+            });
+            
+            // Also update when orientation changes (mobile)
+            window.addEventListener('orientationchange', () => {
+                setTimeout(updateCanvasSize, 300);
             });
             
         }).catch((err) => {
