@@ -160,6 +160,8 @@
           /* CRITICAL: Prevent any layout shifts */
           flex-shrink: 0;
           flex-grow: 0;
+          /* FIXED: Ensure scaling happens from center */
+          transform-origin: center center;
         }
 
         /* Canvas locked to exact dimensions */
@@ -214,18 +216,23 @@
           }
         }
 
+        /* FIXED: Better responsive scaling with proper centering */
         @media (max-width: 1320px) {
           .game-container {
-            /* Scale down proportionally on smaller screens */
             transform: scale(0.8);
-            margin: -72px auto; /* Compensate for scale */
+            /* Better margin calculation: (original_height * scale_factor - original_height) / 2 */
+            /* (720 * 0.8 - 720) / 2 = -72px */
+            margin-top: -72px;
+            margin-bottom: -72px;
           }
         }
 
         @media (max-width: 1080px) {
           .game-container {
             transform: scale(0.7);
-            margin: -108px auto;
+            /* (720 * 0.7 - 720) / 2 = -108px */
+            margin-top: -108px;
+            margin-bottom: -108px;
           }
         }
 
@@ -245,7 +252,9 @@
           
           .game-container {
             transform: scale(0.6);
-            margin: -144px auto;
+            /* (720 * 0.6 - 720) / 2 = -144px */
+            margin-top: -144px;
+            margin-bottom: -144px;
           }
         }
 
@@ -262,7 +271,20 @@
           
           .game-container {
             transform: scale(0.5);
-            margin: -180px auto;
+            /* (720 * 0.5 - 720) / 2 = -180px */
+            margin-top: -180px;
+            margin-bottom: -180px;
+          }
+        }
+
+        /* ADDED: Alternative approach using viewport-based scaling for very small screens */
+        @media (max-width: 400px) {
+          .game-container {
+            /* Use viewport width to ensure it always fits */
+            transform: scale(calc(100vw / 1300)); /* 1300 = 1280 + some padding */
+            /* Dynamic margin based on viewport */
+            margin-top: calc((720px * (100vw / 1300px) - 720px) / 2);
+            margin-bottom: calc((720px * (100vw / 1300px) - 720px) / 2);
           }
         }
     </style>
@@ -295,7 +317,7 @@
     <!-- Godot initialization -->
     <script src="index.js"></script>
     <script>
-        const engine = new Engine({"args":[],"canvasResizePolicy":0,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":116208,"index.wasm":52126319},"focusCanvas":true,"gdextensionLibs":[]});
+        const engine = new Engine({"args":[],"canvasResizePolicy":0,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":115920,"index.wasm":52126319},"focusCanvas":true,"gdextensionLibs":[]});
         const canvas = document.getElementById('canvas');
         
         // Set canvas to exact native resolution
