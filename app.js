@@ -14,9 +14,6 @@ require('dotenv').config();
 //for sending emails directly from the website contact form
 const nodemailer = require('nodemailer');
 
-//Imports CORS to control which domains can access the contact form
-const cors = require('cors');
-
 // Import fetch for making HTTP requests to your auth server
 const fetch = require('node-fetch');
 
@@ -27,7 +24,7 @@ const path = require("path");
 const app = express();
 
 //Email configuration:
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransporter({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
@@ -98,41 +95,32 @@ const validateAuthForm = [
     .withMessage('Password is required')
 ];
 
-//CORS configuration - FIXED for same-origin requests
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests from your domains and localhost for development
-    const allowedOrigins = [
-      'https://jasoncampbell.dev',
-      'https://www.jasoncampbell.dev'
-    ];
-    
-    // IMPORTANT: Allow requests with no origin (same-origin requests, mobile apps, etc.)
-    if (!origin) {
-      console.log('✅ Allowing request with no origin (same-origin)');
-      return callback(null, true);
-    }
-    
-    if (allowedOrigins.includes(origin)) {
-      console.log('✅ Allowing request from:', origin);
-      callback(null, true);
-    } else {
-      console.log('❌ CORS blocked request from:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true, // Allow cookies if needed
-  methods: ['GET', 'POST', 'OPTIONS'], // Added OPTIONS for preflight
-  allowedHeaders: ['Content-Type', 'Authorization'] // Only allow these headers
-};
-
-//Apply CORS to all routes
-app.use(cors(corsOptions));
-
-// Set headers for Godot web export compatibility
+// SIMPLIFIED CORS - Always allow same-origin requests and fix the redirect issue
 app.use((req, res, next) => {
+  // Always set CORS headers for all requests
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Max-Age', '86400');
+  
+  // Set headers for Godot web export compatibility
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
   res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  
+  // Handle preflight OPTIONS requests immediately
+  if (req.method === 'OPTIONS') {
+    console.log('✅ Handling OPTIONS preflight for:', req.url);
+    return res.status(200).end();
+  }
+  
+  console.log(`📡 ${req.method} ${req.url} from origin: ${req.headers.origin || 'no origin'}`);
+  next();
+});
+
+// Add debugging for API routes
+app.use('/api/*', (req, res, next) => {
+  console.log(`🔍 API route hit: ${req.method} ${req.url}`);
   next();
 });
 
