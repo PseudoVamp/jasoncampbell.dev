@@ -47,37 +47,21 @@
           --text-xlg: 900;
         }
 
+        html {
+          margin: 0;
+          padding: 0;
+        }
+
         body {
           background: linear-gradient(135deg, var(--bg-light) 0%, #f5f0e8 50%, #ede5db 100%);
           font-family: var(--text-main);
           font-weight: var(--text-md);
           color: var(--text-dark);
-          /* Completely hide all scrollbars */
-          overflow: hidden;
           min-height: 100vh;
           width: 100vw;
           max-width: 100%;
-          /* Remove any default margins/padding that might cause overflow */
           margin: 0;
           padding: 0;
-        }
-
-        /* Hide scrollbars across all browsers */
-        html {
-          overflow: hidden;
-          margin: 0;
-          padding: 0;
-        }
-
-        /* Alternative scrollbar hiding for webkit browsers */
-        body::-webkit-scrollbar,
-        html::-webkit-scrollbar {
-          display: none;
-        }
-
-        /* For Firefox */
-        html {
-          scrollbar-width: none;
         }
 
         /* Navigation styles */
