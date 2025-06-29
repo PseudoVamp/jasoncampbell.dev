@@ -17,12 +17,14 @@ const nodemailer = require('nodemailer');
 //Imports CORS to control which domains can access the contact form
 const cors = require('cors');
 
+// ADD THIS: Import fetch for making HTTP requests to your auth server
+const fetch = require('node-fetch');
+
 //path file built in with NODE, lets you set file/dir paths
 const path = require("path");
 
 //executes express for the project
 const app = express();
-
 
 //Email configuration:
 const transporter = nodemailer.createTransport({
@@ -32,6 +34,7 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS
   }
 });
+
 //use express-rate-limit to block spam emails, 2 sends per ip, per 15 minute period
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minute window
@@ -44,6 +47,19 @@ const contactLimiter = rateLimit({
   standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: false, // Disable old X-RateLimit-* headers
 });
+
+// Rate limiter for auth requests to prevent abuse
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minute window
+  max: 10, // Allow 10 auth attempts per IP per 15 minutes
+  message: {
+    success: false,
+    error: 'Too many authentication attempts. Please try again in 15 minutes.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 //Validation for the email form
 const validateContactForm = [
   body('name')
@@ -66,6 +82,20 @@ const validateContactForm = [
     .isLength({ min: 10, max: 5000 })
     .withMessage('Message must be between 10 and 5000 characters')
     .escape() // Converts HTML characters like < > to safe versions
+];
+
+// Validation for auth requests
+const validateAuthForm = [
+  body('username')
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Username must be between 1 and 50 characters')
+    .matches(/^[a-zA-Z0-9_\-]+$/)
+    .withMessage('Username can only contain letters, numbers, underscores, and hyphens'),
+  
+  body('password')
+    .isLength({ min: 1, max: 200 })
+    .withMessage('Password is required')
 ];
 
 //CORS configuration - only allow requests from my domains
@@ -95,6 +125,13 @@ const corsOptions = {
 //Apply CORS to all routes
 app.use(cors(corsOptions));
 
+// Set headers for Godot web export compatibility
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  next();
+});
+
 //tells the app to use extended javascript
 //need to install with npm, and then express will require it so you dont have to
 //IMPORTANT!!! the default folder ejs will look for assets to load is "/views"
@@ -116,6 +153,9 @@ app.use('/webHangout', express.static(path.join(__dirname, "public/webHangout"))
 
 //Parse form data:
 app.use(express.urlencoded({ extended: true }));
+
+// Parse JSON data for API requests
+app.use(express.json());
 
 //sets the route/home of this project to this file with a request and response
 app.get("/", (req, res) => {
@@ -143,8 +183,6 @@ app.get("/resume", (req, res) => {
   res.render("resume.ejs");
 });
 
-
-
 //loads the survival game on the project page
 app.get("/survival", (req, res) => {
   res.render("survival.ejs");
@@ -154,6 +192,116 @@ app.get("/survival", (req, res) => {
 app.get("/contact", (req, res) => {
   res.render("contact.ejs", { query: req.query });
 });
+
+// New WebHangout game page route
+app.get("/webHangout", (req, res) => {
+  res.render("webHangout.ejs");
+});
+
+// =============================================================================
+// AUTHENTICATION PROXY ROUTES
+// =============================================================================
+
+// Login proxy route - forwards requests to your auth server
+app.post("/api/login", authLimiter, validateAuthForm, async (req, res) => {
+  // Check if validation found any errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      errors: errors.array()
+    });
+  }
+
+  try {
+    console.log('🔐 Proxying login request for:', req.body.username);
+    
+    // Forward request to your auth server
+    const response = await fetch('https://backend.jasoncampbell.dev:50003/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'WebHangout-Proxy/1.0'
+      },
+      body: JSON.stringify({
+        username: req.body.username,
+        password: req.body.password
+      })
+    });
+
+    // Get the response data
+    const data = await response.json();
+    
+    console.log('✅ Auth server responded with status:', response.status);
+    
+    // Forward the exact response from auth server
+    res.status(response.status).json(data);
+    
+  } catch (error) {
+    console.error('❌ Proxy error during login:', error.message);
+    res.status(500).json({ 
+      success: false,
+      error: 'Authentication service temporarily unavailable' 
+    });
+  }
+});
+
+// Register proxy route - forwards requests to your auth server
+app.post("/api/register", authLimiter, validateAuthForm, async (req, res) => {
+  // Check if validation found any errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      errors: errors.array()
+    });
+  }
+
+  try {
+    console.log('📝 Proxying registration request for:', req.body.username);
+    
+    // Forward request to your auth server
+    const response = await fetch('https://backend.jasoncampbell.dev:50003/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'WebHangout-Proxy/1.0'
+      },
+      body: JSON.stringify({
+        username: req.body.username,
+        password: req.body.password
+      })
+    });
+
+    // Get the response data
+    const data = await response.json();
+    
+    console.log('✅ Auth server responded with status:', response.status);
+    
+    // Forward the exact response from auth server
+    res.status(response.status).json(data);
+    
+  } catch (error) {
+    console.error('❌ Proxy error during registration:', error.message);
+    res.status(500).json({ 
+      success: false,
+      error: 'Authentication service temporarily unavailable' 
+    });
+  }
+});
+
+// Health check route for the auth proxy
+app.get("/api/auth-status", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "WebHangout authentication proxy is running",
+    timestamp: new Date().toISOString()
+  });
+});
+
+// =============================================================================
+// END OF AUTHENTICATION PROXY SECTION
+// =============================================================================
 
 //Contact form POST route (handles both regular and AJAX submissions)
 app.post("/contact", contactLimiter, validateContactForm, (req, res) => {
@@ -220,9 +368,10 @@ ${message}
   });
 });
 
-
 //sets the node script.js command to open a server listening on the specified port
 //lets you go to localhost:3000 to load the app (requires node app.js running)
 app.listen(3000, () => {
   console.log("listening on port 3000");
+  console.log("🎮 WebHangout authentication proxy enabled");
+  console.log("🔗 Auth endpoints: /api/login, /api/register");
 });
