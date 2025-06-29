@@ -97,7 +97,7 @@ const validateAuthForm = [
     .withMessage('Password is required')
 ];
 
-//CORS configuration - only allow requests from my domains
+//CORS configuration - allow same-origin requests
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests from your domains and localhost for development
@@ -106,18 +106,22 @@ const corsOptions = {
       'https://www.jasoncampbell.dev'
     ];
     
-    // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin) return callback(null, true);
+    // IMPORTANT: Allow requests with no origin (same-origin requests, mobile apps, etc.)
+    if (!origin) {
+      console.log('✅ Allowing request with no origin (same-origin)');
+      return callback(null, true);
+    }
     
     if (allowedOrigins.includes(origin)) {
+      console.log('✅ Allowing request from:', origin);
       callback(null, true);
     } else {
-      console.log('CORS blocked request from:', origin);
+      console.log('❌ CORS blocked request from:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true, // Allow cookies if needed
-  methods: ['GET', 'POST'], // Only allow these HTTP methods
+  methods: ['GET', 'POST', 'OPTIONS'], // Added OPTIONS for preflight
   allowedHeaders: ['Content-Type', 'Authorization'] // Only allow these headers
 };
 
