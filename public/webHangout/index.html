@@ -203,21 +203,26 @@
           }
         }
 
-        /* FIXED: Better responsive scaling with proper centering */
+        /* FIXED: Keep scaling but reduce margins for small screens */
         @media (max-width: 1320px) {
+          .game-section {
+            padding: 6rem 1rem 2rem; /* Reduced side padding */
+          }
+          
           .game-container {
             transform: scale(0.8);
-            /* Better margin calculation: (original_height * scale_factor - original_height) / 2 */
-            /* (720 * 0.8 - 720) / 2 = -72px */
             margin-top: -72px;
             margin-bottom: -72px;
           }
         }
 
         @media (max-width: 1080px) {
+          .game-section {
+            padding: 6rem 0.5rem 2rem; /* Even less side padding */
+          }
+          
           .game-container {
             transform: scale(0.7);
-            /* (720 * 0.7 - 720) / 2 = -108px */
             margin-top: -108px;
             margin-bottom: -108px;
           }
@@ -225,8 +230,8 @@
 
         @media (max-width: 768px) {
           .game-section {
-            padding: 6rem 1rem 2rem;
-            gap: 1.5rem;
+            padding: 5rem 0.25rem 1rem; /* Minimal side padding */
+            gap: 1rem;
           }
           
           .game-header h1 {
@@ -239,16 +244,16 @@
           
           .game-container {
             transform: scale(0.6);
-            /* (720 * 0.6 - 720) / 2 = -144px */
             margin-top: -144px;
             margin-bottom: -144px;
           }
         }
 
-        @media screen and (max-width: 480px) {
+        @media (max-width: 480px) {
           nav {
             gap: 0.5rem;
             padding: 0.3rem 0.6rem;
+            top: 1rem;
           }
           
           nav a {
@@ -256,22 +261,36 @@
             padding: 0.3rem 0.6rem;
           }
           
+          .game-section {
+            padding: 4rem 0.1rem 1rem; /* Almost no side padding */
+            gap: 0.5rem;
+          }
+          
+          .game-header h1 {
+            font-size: 1.8rem;
+          }
+          
           .game-container {
             transform: scale(0.5);
-            /* (720 * 0.5 - 720) / 2 = -180px */
             margin-top: -180px;
             margin-bottom: -180px;
           }
         }
 
-        /* ADDED: Alternative approach using viewport-based scaling for very small screens */
-        @media (max-width: 400px) {
+        /* Very small screens - game almost touches edges */
+        @media (max-width: 320px) {
+          .game-section {
+            padding: 3.5rem 0.05rem 0.5rem; /* Practically no margins */
+          }
+          
+          .game-header h1 {
+            font-size: 1.5rem;
+          }
+          
           .game-container {
-            /* Use viewport width to ensure it always fits */
-            transform: scale(calc(100vw / 1300)); /* 1300 = 1280 + some padding */
-            /* Dynamic margin based on viewport */
-            margin-top: calc((720px * (100vw / 1300px) - 720px) / 2);
-            margin-bottom: calc((720px * (100vw / 1300px) - 720px) / 2);
+            transform: scale(0.4);
+            margin-top: -216px;
+            margin-bottom: -216px;
           }
         }
     </style>
