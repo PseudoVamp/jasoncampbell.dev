@@ -14,9 +14,6 @@ require('dotenv').config();
 //for sending emails directly from the website contact form
 const nodemailer = require('nodemailer');
 
-// Import fetch for making HTTP requests to your auth server
-const fetch = require('node-fetch');
-
 //path file built in with NODE, lets you set file/dir paths
 const path = require("path");
 
@@ -35,7 +32,6 @@ const transporter = nodemailer.createTransporter({
 //use express-rate-limit to block spam emails, 2 sends per ip, per 15 minute period
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minute window
-  // windowMs: 4 * 1000, // 15 second window (for testing)
   max: 2, //number of possible sends
   message: {
     success: false,
@@ -210,26 +206,60 @@ app.post("/api/login", authLimiter, validateAuthForm, async (req, res) => {
     console.log('🔐 Proxying login request for:', req.body.username);
     console.log('🔍 Request origin:', req.headers.origin || 'no origin');
     
-    // Forward request to your auth server
-    const response = await fetch('https://backend.jasoncampbell.dev:50003/login', {
+    // Use Node.js built-in fetch (Node 18+) or https module for Vercel compatibility
+    const https = require('https');
+    const querystring = require('querystring');
+    
+    const postData = JSON.stringify({
+      username: req.body.username,
+      password: req.body.password
+    });
+
+    const options = {
+      hostname: 'backend.jasoncampbell.dev',
+      port: 50003,
+      path: '/login',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData),
         'User-Agent': 'WebHangout-Proxy/1.0'
-      },
-      body: JSON.stringify({
-        username: req.body.username,
-        password: req.body.password
-      })
+      }
+    };
+
+    const proxyReq = https.request(options, (proxyRes) => {
+      let data = '';
+      
+      proxyRes.on('data', (chunk) => {
+        data += chunk;
+      });
+      
+      proxyRes.on('end', () => {
+        try {
+          const responseData = JSON.parse(data);
+          console.log('✅ Auth server responded with status:', proxyRes.statusCode);
+          res.status(proxyRes.statusCode).json(responseData);
+        } catch (parseError) {
+          console.error('❌ Failed to parse auth server response:', parseError);
+          res.status(500).json({ 
+            success: false,
+            error: 'Invalid response from authentication service' 
+          });
+        }
+      });
     });
 
-    // Get the response data
-    const data = await response.json();
-    
-    console.log('✅ Auth server responded with status:', response.status);
-    
-    // Forward the exact response from auth server
-    res.status(response.status).json(data);
+    proxyReq.on('error', (error) => {
+      console.error('❌ Proxy error during login:', error.message);
+      res.status(500).json({ 
+        success: false,
+        error: 'Authentication service temporarily unavailable' 
+      });
+    });
+
+    // Send the request
+    proxyReq.write(postData);
+    proxyReq.end();
     
   } catch (error) {
     console.error('❌ Proxy error during login:', error.message);
@@ -256,26 +286,59 @@ app.post("/api/register", authLimiter, validateAuthForm, async (req, res) => {
     console.log('📝 Proxying registration request for:', req.body.username);
     console.log('🔍 Request origin:', req.headers.origin || 'no origin');
     
-    // Forward request to your auth server
-    const response = await fetch('https://backend.jasoncampbell.dev:50003/register', {
+    // Use Node.js built-in https module for Vercel compatibility
+    const https = require('https');
+    
+    const postData = JSON.stringify({
+      username: req.body.username,
+      password: req.body.password
+    });
+
+    const options = {
+      hostname: 'backend.jasoncampbell.dev',
+      port: 50003,
+      path: '/register',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData),
         'User-Agent': 'WebHangout-Proxy/1.0'
-      },
-      body: JSON.stringify({
-        username: req.body.username,
-        password: req.body.password
-      })
+      }
+    };
+
+    const proxyReq = https.request(options, (proxyRes) => {
+      let data = '';
+      
+      proxyRes.on('data', (chunk) => {
+        data += chunk;
+      });
+      
+      proxyRes.on('end', () => {
+        try {
+          const responseData = JSON.parse(data);
+          console.log('✅ Auth server responded with status:', proxyRes.statusCode);
+          res.status(proxyRes.statusCode).json(responseData);
+        } catch (parseError) {
+          console.error('❌ Failed to parse auth server response:', parseError);
+          res.status(500).json({ 
+            success: false,
+            error: 'Invalid response from authentication service' 
+          });
+        }
+      });
     });
 
-    // Get the response data
-    const data = await response.json();
-    
-    console.log('✅ Auth server responded with status:', response.status);
-    
-    // Forward the exact response from auth server
-    res.status(response.status).json(data);
+    proxyReq.on('error', (error) => {
+      console.error('❌ Proxy error during registration:', error.message);
+      res.status(500).json({ 
+        success: false,
+        error: 'Authentication service temporarily unavailable' 
+      });
+    });
+
+    // Send the request
+    proxyReq.write(postData);
+    proxyReq.end();
     
   } catch (error) {
     console.error('❌ Proxy error during registration:', error.message);
