@@ -341,45 +341,30 @@
     <script>
         const engine = new Engine({"args":[],"canvasResizePolicy":0,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":117456,"index.wasm":52126319},"focusCanvas":true,"gdextensionLibs":[]});
         const canvas = document.getElementById('canvas');
-        const gameContainer = document.getElementById('gameContainer');
         
-        function updateCanvasSize() {
-            // Get the actual container size
-            const containerRect = gameContainer.getBoundingClientRect();
-            const containerWidth = gameContainer.offsetWidth;
-            const containerHeight = gameContainer.offsetHeight;
-            
-            // Set canvas to match container size exactly
-            canvas.width = containerWidth;
-            canvas.height = containerHeight;
-            canvas.style.width = containerWidth + 'px';
-            canvas.style.height = containerHeight + 'px';
-            canvas.style.position = 'absolute';
-            canvas.style.top = '0px';
-            canvas.style.left = '0px';
-            canvas.style.transform = 'none';
-            
-            console.log(`Canvas resized to: ${containerWidth}×${containerHeight}`);
-        }
-        
-        // Start the game with responsive sizing
+        // Start the game with container-relative sizing
         engine.startGame({
             canvas: canvas,
             focusCanvas: true
         }).then(() => {
-            console.log('Game loaded with responsive scaling');
+            console.log('Game loaded with responsive container');
             
-            // Set initial size
-            updateCanvasSize();
+            // Let Godot handle the scaling, just ensure canvas fits container
+            const maintainContainerFit = () => {
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
+                canvas.style.position = 'absolute';
+                canvas.style.top = '0px';
+                canvas.style.left = '0px';
+                canvas.style.transform = 'none';
+            };
             
-            // Update size when window resizes
+            // Apply initial fit
+            setTimeout(maintainContainerFit, 100);
+            
+            // Maintain fit on resize
             window.addEventListener('resize', () => {
-                setTimeout(updateCanvasSize, 100);
-            });
-            
-            // Also update when orientation changes (mobile)
-            window.addEventListener('orientationchange', () => {
-                setTimeout(updateCanvasSize, 300);
+                setTimeout(maintainContainerFit, 10);
             });
             
         }).catch((err) => {
