@@ -206,14 +206,14 @@
           }
         }
 
-        /* FIXED: Use max-width to prevent overflow and ensure centering */
+        /* FIXED: Prevent game from getting too small and ensure visibility */
         @media (max-width: 1320px) {
           .game-section {
             padding: 6rem 1rem 2rem;
           }
           
           .game-container {
-            max-width: calc(100vw - 2rem); /* Never wider than viewport */
+            max-width: calc(100vw - 2rem);
             transform: scale(0.8);
             margin-top: -72px;
             margin-bottom: -72px;
@@ -249,9 +249,9 @@
           
           .game-container {
             max-width: calc(100vw - 0.5rem);
-            transform: scale(0.6);
-            margin-top: -144px;
-            margin-bottom: -144px;
+            transform: scale(0.65); /* Slightly larger minimum scale */
+            margin-top: -126px;
+            margin-bottom: -126px;
           }
         }
 
@@ -260,7 +260,7 @@
             gap: 0.5rem;
             padding: 0.3rem 0.6rem;
             top: 1rem;
-            max-width: calc(100vw - 1rem); /* Tighter nav constraint */
+            max-width: calc(100vw - 1rem);
           }
           
           nav a {
@@ -279,13 +279,14 @@
           
           .game-container {
             max-width: calc(100vw - 0.2rem);
-            transform: scale(0.5);
-            margin-top: -180px;
-            margin-bottom: -180px;
+            /* MINIMUM scale to keep game usable */
+            transform: scale(0.6);
+            margin-top: -144px;
+            margin-bottom: -144px;
           }
         }
 
-        /* Very small screens - prevent any overflow */
+        /* Very small screens - maintain minimum usable size */
         @media (max-width: 320px) {
           nav {
             gap: 0.25rem;
@@ -300,6 +301,8 @@
           
           .game-section {
             padding: 3.5rem 0.05rem 0.5rem;
+            /* Add some bottom padding for scrolling */
+            padding-bottom: 2rem;
           }
           
           .game-header h1 {
@@ -308,9 +311,26 @@
           
           .game-container {
             max-width: calc(100vw - 0.1rem);
-            transform: scale(0.4);
-            margin-top: -216px;
-            margin-bottom: -216px;
+            /* MINIMUM scale - don't go smaller than 0.55 */
+            transform: scale(0.55);
+            margin-top: -162px;
+            margin-bottom: -162px;
+            /* Ensure it's always visible */
+            min-height: 396px; /* 720 * 0.55 */
+          }
+        }
+
+        /* Extremely small screens - use scrolling instead of tiny scaling */
+        @media (max-width: 280px) {
+          .game-section {
+            padding: 3rem 0.02rem 3rem; /* More bottom padding for scroll */
+          }
+          
+          .game-container {
+            /* Stop scaling, use fixed minimum size that requires scrolling */
+            transform: scale(0.55);
+            /* Allow horizontal scroll if absolutely necessary */
+            overflow-x: auto;
           }
         }
     </style>
