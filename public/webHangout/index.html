@@ -80,7 +80,6 @@
           display: flex;
           gap: 2rem;
           align-items: center;
-          /* FIXED: Prevent nav from overflowing on small screens */
           max-width: calc(100vw - 2rem);
           box-sizing: border-box;
         }
@@ -137,44 +136,32 @@
           opacity: 0.7;
         }
 
-        /* Game container - FIXED container that never changes */
+        /* FIXED: Responsive game container that maintains aspect ratio */
         .game-container {
-          width: 1280px;
-          height: 720px;
+          /* Start with max size, scale down as needed */
+          width: min(1280px, calc(100vw - 4rem));
+          /* Maintain 16:9 aspect ratio (720/1280 = 0.5625) */
+          height: min(720px, calc((100vw - 4rem) * 0.5625));
           border-radius: 15px;
           overflow: hidden;
           box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
           border: 3px solid var(--bg-3);
           margin: 0 auto;
           position: relative;
-          /* CRITICAL: Prevent any layout shifts */
           flex-shrink: 0;
           flex-grow: 0;
-          /* FIXED: Ensure scaling happens from center */
-          transform-origin: center center;
         }
 
-        /* Canvas locked to exact dimensions */
+        /* FIXED: Canvas that scales to fill container */
         #canvas {
           position: absolute !important;
           top: 0 !important;
           left: 0 !important;
-          width: 1280px !important;
-          height: 720px !important;
+          width: 100% !important;
+          height: 100% !important;
           display: block !important;
-          /* Prevent any scaling or resizing */
-          min-width: 1280px !important;
-          min-height: 720px !important;
-          max-width: 1280px !important;
-          max-height: 720px !important;
-          /* Pixel-perfect rendering */
-          image-rendering: pixelated;
-          image-rendering: -moz-crisp-edges;
-          image-rendering: crisp-edges;
-          image-rendering: optimize-contrast;
-          -ms-interpolation-mode: nearest-neighbor;
-          /* Prevent transforms */
-          transform: none !important;
+          /* Remove pixel-perfect rendering to allow scaling */
+          image-rendering: auto;
           /* Prevent margin/padding interference */
           margin: 0 !important;
           padding: 0 !important;
@@ -206,40 +193,11 @@
           }
         }
 
-        /* FIXED: Mathematical scaling to always fit viewport perfectly */
-        @media (max-width: 1320px) {
-          .game-section {
-            padding: 6rem 1rem 2rem;
-          }
-          
-          .game-container {
-            /* Calculate scale to fit viewport width */
-            width: min(1280px, calc(100vw - 2rem));
-            height: min(720px, calc((100vw - 2rem) * 0.5625));
-            transform: none; /* No transform needed */
-          }
-          
-          #canvas {
-            width: 100% !important;
-            height: 100% !important;
-          }
-        }
-
-        @media (max-width: 1080px) {
-          .game-section {
-            padding: 6rem 1rem 2rem;
-          }
-          
-          .game-container {
-            width: min(1280px, calc(100vw - 2rem));
-            height: min(720px, calc((100vw - 2rem) * 0.5625));
-          }
-        }
-
+        /* Responsive breakpoints for smaller screens */
         @media (max-width: 768px) {
           .game-section {
-            padding: 5rem 0.5rem 2rem;
-            gap: 1rem;
+            padding: 6rem 1rem 2rem;
+            gap: 1.5rem;
           }
           
           .game-header h1 {
@@ -251,8 +209,8 @@
           }
           
           .game-container {
-            width: min(1280px, calc(100vw - 1rem));
-            height: min(720px, calc((100vw - 1rem) * 0.5625));
+            width: calc(100vw - 2rem);
+            height: calc((100vw - 2rem) * 0.5625);
           }
         }
 
@@ -271,7 +229,7 @@
           
           .game-section {
             padding: 4rem 0.5rem 1rem;
-            gap: 0.5rem;
+            gap: 1rem;
           }
           
           .game-header h1 {
@@ -279,8 +237,8 @@
           }
           
           .game-container {
-            width: min(1280px, calc(100vw - 1rem));
-            height: min(720px, calc((100vw - 1rem) * 0.5625));
+            width: calc(100vw - 1rem);
+            height: calc((100vw - 1rem) * 0.5625);
           }
         }
 
@@ -305,8 +263,8 @@
           }
           
           .game-container {
-            width: min(1280px, calc(100vw - 0.5rem));
-            height: min(720px, calc((100vw - 0.5rem) * 0.5625));
+            width: calc(100vw - 0.5rem);
+            height: calc((100vw - 0.5rem) * 0.5625);
           }
         }
     </style>
@@ -345,21 +303,21 @@
         
         function updateCanvasSize() {
             // Get the actual container size
-            const containerRect = gameContainer.getBoundingClientRect();
             const containerWidth = gameContainer.offsetWidth;
             const containerHeight = gameContainer.offsetHeight;
             
-            // Set canvas to match container size exactly
-            canvas.width = containerWidth;
-            canvas.height = containerHeight;
+            // Set canvas logical size to always be 1280x720 (for Godot's internal resolution)
+            canvas.width = 1280;
+            canvas.height = 720;
+            
+            // Set canvas display size to fill container (this is the key!)
             canvas.style.width = containerWidth + 'px';
             canvas.style.height = containerHeight + 'px';
             canvas.style.position = 'absolute';
             canvas.style.top = '0px';
             canvas.style.left = '0px';
-            canvas.style.transform = 'none';
             
-            console.log(`Canvas resized to: ${containerWidth}×${containerHeight}`);
+            console.log(`Canvas logical: 1280×720, display: ${containerWidth}×${containerHeight}`);
         }
         
         // Start the game with responsive sizing
