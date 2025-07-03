@@ -1,24 +1,40 @@
+<!-- custom_godot_template.html - Responsive Godot web export template -->
+<!-- Provides responsive scaling, website integration, and proper CORS headers for WebHangout game -->
+<!-- Maintains 16:9 aspect ratio across all device sizes while preserving game's internal resolution -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- ========== BASIC HTML CONFIGURATION ========== -->
+    
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- ADDED: Required headers for Godot 4 web exports -->
+    
+    <!-- Required CORS headers for Godot 4 web exports to function properly -->
+    <!-- These headers enable SharedArrayBuffer and other advanced web features needed by Godot -->
     <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin" />
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp" />
+    
+    <!-- Google Fonts preconnection for faster font loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,500;0,700;0,900;1,300;1,500;1,700;1,900&display=swap" rel="stylesheet" />
+    
+    <!-- Dynamic title and favicon populated by Godot export process -->
     <title>WebHangout - Web Hangout Client</title>
     <link id="-gd-engine-icon" rel="icon" type="image/png" href="index.js.icon.png" />
     <link rel="apple-touch-icon" href="index.js.apple-touch-icon.png"/>
+    
+    <!-- Godot-generated head content inserted here during export -->
     <link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
 
     
     <style>
-        /* Your existing CSS variables and base styles */
+        /* ========== CSS RESET AND BASE STYLES ========== */
+        
+        /* Universal box-sizing and margin/padding reset for consistent layout */
         *,
         *::before,
         *::after {
@@ -27,21 +43,22 @@
           padding: 0;
         }
 
+        /* CSS custom properties for consistent theming across website */
         :root {
           font-size: 16px;
-          --bg-nav: #293269;
-          --bg-dark: #3b457d;
-          --bg-light: #fef9ef;
-          --bg-0: #ffbe0b;
+          --bg-nav: #293269;      /* Navigation background color */
+          --bg-dark: #3b457d;     /* Dark theme accent */
+          --bg-light: #fef9ef;    /* Light background base */
+          --bg-0: #ffbe0b;        /* Brand color palette */
           --bg-1: #fb5607;
           --bg-2: #ff006e;
           --bg-3: #8338ec;
           --bg-4: #3a86ff;
           --bg-5: #06d6a0;
-          --text-light: #ebe7df;
-          --text-dark: #071c28;
-          --text-main: "Rubik", sans-serif;
-          --text-sm: 300;
+          --text-light: #ebe7df;  /* Light text color */
+          --text-dark: #071c28;   /* Dark text color */
+          --text-main: "Rubik", sans-serif;  /* Primary font family */
+          --text-sm: 300;         /* Font weight variables */
           --text-md: 500;
           --text-lg: 700;
           --text-xlg: 900;
@@ -52,6 +69,7 @@
           padding: 0;
         }
 
+        /* Body styling with gradient background matching website design */
         body {
           background: linear-gradient(135deg, var(--bg-light) 0%, #f5f0e8 50%, #ede5db 100%);
           font-family: var(--text-main);
@@ -64,26 +82,29 @@
           padding: 0;
         }
 
-        /* Navigation styles */
+        /* ========== NAVIGATION STYLES ========== */
+        
+        /* Fixed navigation bar with glassmorphism effect */
         nav {
           position: fixed;
           top: 2rem;
           left: 50%;
           transform: translateX(-50%);
-          background: rgba(41, 50, 105, 0.9);
-          backdrop-filter: blur(20px);
+          background: rgba(41, 50, 105, 0.9);   /* Semi-transparent background */
+          backdrop-filter: blur(20px);          /* Glassmorphism blur effect */
           border: 1px solid rgba(235, 231, 223, 0.2);
           border-radius: 50px;
           padding: 0.5rem 1rem;
-          z-index: 1000;
+          z-index: 1000;                        /* Ensures nav stays above game canvas */
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
           display: flex;
           gap: 2rem;
           align-items: center;
-          max-width: calc(100vw - 2rem);
+          max-width: calc(100vw - 2rem);        /* Prevents nav from overflowing screen */
           box-sizing: border-box;
         }
 
+        /* Navigation link styling with hover effects */
         nav a {
           text-decoration: none;
           color: #ffffff;
@@ -91,29 +112,33 @@
           font-size: 0.9rem;
           padding: 0.5rem 1rem;
           border-radius: 25px;
-          transition: all 0.3s ease;
-          white-space: nowrap;
+          transition: all 0.3s ease;            /* Smooth hover transitions */
+          white-space: nowrap;                  /* Prevents text wrapping on small screens */
         }
 
+        /* Hover and active states for navigation links */
         nav a:hover,
         nav a.active {
           background: var(--text-light);
           color: var(--text-dark);
-          transform: translateY(-1px);
+          transform: translateY(-1px);          /* Subtle lift effect on hover */
         }
 
-        /* Game section styles */
+        /* ========== GAME SECTION LAYOUT ========== */
+        
+        /* Main container for game content with flexbox centering */
         .game-section {
           min-height: 100vh;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 8rem 2rem 4rem;
+          padding: 8rem 2rem 4rem;              /* Top padding accounts for fixed nav */
           gap: 2rem;
           width: 100%;
         }
 
+        /* Game title and description styling */
         .game-header {
           text-align: center;
           margin-bottom: 2rem;
@@ -124,6 +149,7 @@
           font-weight: var(--text-lg);
           margin-bottom: 1rem;
           color: var(--text-dark);
+          /* Gradient text effect using brand colors */
           background: linear-gradient(45deg, var(--bg-3), var(--bg-4));
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -136,37 +162,38 @@
           opacity: 0.7;
         }
 
-        /* FIXED: Responsive game container that maintains aspect ratio */
+        /* ========== RESPONSIVE GAME CONTAINER ========== */
+        
+        /* Game container that maintains 16:9 aspect ratio across all screen sizes */
         .game-container {
-          /* Start with max size, scale down as needed */
+          /* Uses min() to scale down from max size (1280x720) based on available space */
           width: min(1280px, calc(100vw - 4rem));
-          /* Maintain 16:9 aspect ratio (720/1280 = 0.5625) */
+          /* Maintains 16:9 aspect ratio (720/1280 = 0.5625) */
           height: min(720px, calc((100vw - 4rem) * 0.5625));
           border-radius: 15px;
           overflow: hidden;
           box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
           border: 3px solid var(--bg-3);
           margin: 0 auto;
-          position: relative;
-          flex-shrink: 0;
-          flex-grow: 0;
+          position: relative;                   /* Enables absolute positioning for canvas */
+          flex-shrink: 0;                      /* Prevents container from shrinking */
+          flex-grow: 0;                        /* Prevents container from growing */
         }
 
-        /* FIXED: Canvas that scales to fill container */
+        /* Canvas styling for responsive scaling while preserving game resolution */
         #canvas {
-          position: absolute !important;
+          position: absolute !important;       /* Positions canvas within container */
           top: 0 !important;
           left: 0 !important;
-          width: 100% !important;
+          width: 100% !important;              /* Fills container completely */
           height: 100% !important;
           display: block !important;
-          /* Remove pixel-perfect rendering to allow scaling */
-          image-rendering: auto;
-          /* Prevent margin/padding interference */
-          margin: 0 !important;
+          image-rendering: auto;               /* Allows smooth scaling instead of pixelation */
+          margin: 0 !important;                /* Removes any inherited margins */
           padding: 0 !important;
         }
 
+        /* Game description text styling */
         .game-info {
           text-align: center;
           max-width: 600px;
@@ -179,7 +206,9 @@
           line-height: 1.6;
         }
 
-        /* Responsive navigation */
+        /* ========== RESPONSIVE BREAKPOINTS ========== */
+        
+        /* Medium screens - tablets and small laptops */
         @media screen and (max-width: 700px) {
           nav {
             top: 1rem;
@@ -193,7 +222,7 @@
           }
         }
 
-        /* Responsive breakpoints for smaller screens */
+        /* Small screens - large phones and small tablets */
         @media (max-width: 768px) {
           .game-section {
             padding: 6rem 1rem 2rem;
@@ -209,11 +238,12 @@
           }
           
           .game-container {
-            width: calc(100vw - 2rem);
+            width: calc(100vw - 2rem);          /* Reduces side margins on small screens */
             height: calc((100vw - 2rem) * 0.5625);
           }
         }
 
+        /* Very small screens - most phones */
         @media (max-width: 480px) {
           nav {
             gap: 0.5rem;
@@ -242,6 +272,7 @@
           }
         }
 
+        /* Ultra-small screens - older or very small phones */
         @media (max-width: 320px) {
           nav {
             gap: 0.25rem;
@@ -270,7 +301,9 @@
     </style>
 </head>
 <body>
-    <!-- Your website navigation -->
+    <!-- ========== WEBSITE NAVIGATION ========== -->
+    
+    <!-- Navigation bar matching main website design -->
     <nav class="colored-version">
         <a href="/">Home</a>
         <a href="/resume">Résumé</a>
@@ -278,39 +311,49 @@
         <a href="https://github.com/PseudoVamp" target="_blank">Github</a>
     </nav>
 
-    <!-- Your website content -->
+    <!-- ========== GAME CONTENT SECTION ========== -->
+    
     <section class="game-section">
+        <!-- Game title and description -->
         <div class="game-header">
             <h1>WebHangout</h1>
             <p>A multiplayer social village experience</p>
         </div>
         
+        <!-- Responsive game container that houses the Godot canvas -->
         <div class="game-container" id="gameContainer">
             <canvas id="canvas"></canvas>
         </div>
         
+        <!-- Additional game information -->
         <div class="game-info">
             <p>Connect with friends in a shared virtual village. Chat, explore, and hang out together!</p>
         </div>
     </section>
 
-    <!-- Godot initialization -->
+    <!-- ========== GODOT GAME INITIALIZATION ========== -->
+    
+    <!-- Godot engine script loaded dynamically during export process -->
     <script src="index.js"></script>
     <script>
-        const engine = new Engine({"args":[],"canvasResizePolicy":0,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":170288,"index.wasm":52126319},"focusCanvas":true,"gdextensionLibs":[]});
+        // Initializes Godot engine with configuration from export process
+        const engine = new Engine({"args":[],"canvasResizePolicy":0,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":73056,"index.wasm":52126319},"focusCanvas":true,"gdextensionLibs":[]});
         const canvas = document.getElementById('canvas');
         const gameContainer = document.getElementById('gameContainer');
         
+        // Updates canvas size to match container while preserving game resolution
         function updateCanvasSize() {
-            // Get the actual container size
+            // Gets actual container dimensions from DOM
             const containerWidth = gameContainer.offsetWidth;
             const containerHeight = gameContainer.offsetHeight;
             
-            // Set canvas logical size to always be 1280x720 (for Godot's internal resolution)
+            // Sets canvas internal resolution to Godot's expected 1280x720
+            // This ensures consistent game logic regardless of display size
             canvas.width = 1280;
             canvas.height = 720;
             
-            // Set canvas display size to fill container (this is the key!)
+            // Sets canvas display size to fill container completely
+            // Browser handles scaling between internal and display resolution
             canvas.style.width = containerWidth + 'px';
             canvas.style.height = containerHeight + 'px';
             canvas.style.position = 'absolute';
@@ -320,27 +363,28 @@
             console.log(`Canvas logical: 1280×720, display: ${containerWidth}×${containerHeight}`);
         }
         
-        // Start the game with responsive sizing
+        // Starts Godot game with responsive canvas configuration
         engine.startGame({
             canvas: canvas,
-            focusCanvas: true
+            focusCanvas: true                    // Automatically focuses canvas for input
         }).then(() => {
             console.log('Game loaded with responsive scaling');
             
-            // Set initial size
+            // Sets initial canvas size after game loads
             updateCanvasSize();
             
-            // Update size when window resizes
+            // Updates canvas size when browser window is resized
             window.addEventListener('resize', () => {
-                setTimeout(updateCanvasSize, 100);
+                setTimeout(updateCanvasSize, 100);   // Small delay ensures container has resized
             });
             
-            // Also update when orientation changes (mobile)
+            // Handles mobile device orientation changes
             window.addEventListener('orientationchange', () => {
-                setTimeout(updateCanvasSize, 300);
+                setTimeout(updateCanvasSize, 300);   // Longer delay for orientation change
             });
             
         }).catch((err) => {
+            // Logs any errors during game initialization
             console.error('Failed to start game:', err);
         });
     </script>
