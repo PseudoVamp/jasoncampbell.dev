@@ -154,6 +154,11 @@ app.use(express.static(path.join(__dirname, "public")));
 //this keeps the game assets separate from the main website assets
 app.use('/webHangout', express.static(path.join(__dirname, "public/webHangout")));
 
+//tells express to serve the Godot game files (wasm, js, pck) from the catStuff folder
+//when someone visits /catStuff/filename, it will look in public/catStuff/ for that file
+//this keeps the game assets separate from the main website assets
+app.use('/catStuff', express.static(path.join(__dirname, "public/catStuff")));
+
 //Parse form data:
 app.use(express.urlencoded({ extended: true }));
 
@@ -196,10 +201,15 @@ app.get("/contact", (req, res) => {
   res.render("contact.ejs", { query: req.query });
 });
 
-// New WebHangout game page route
-app.get("/webHangout", (req, res) => {
-  res.render("webHangout.ejs");
-});
+// // New WebHangout game page route
+// app.get("/webHangout", (req, res) => {
+//   res.render("webHangout.ejs");
+// });
+
+// // New catStuff game page route
+// app.get("/catStuff", (req, res) => {
+//   res.render("catStuff.ejs");
+// });
 
 // =============================================================================
 // AUTHENTICATION PROXY ROUTES
