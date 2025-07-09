@@ -67,7 +67,7 @@ const validateContactForm = [
     .withMessage('Name must be between 1 and 100 characters')
     .matches(/^[a-zA-Z\s\-'\.]+$/)
     .withMessage('Name can only contain letters, spaces, hyphens, apostrophes, and periods'),
-  
+
   body('email')
     .trim()
     .isEmail()
@@ -75,7 +75,7 @@ const validateContactForm = [
     .normalizeEmail() // Converts to lowercase, removes dots from Gmail addresses
     .isLength({ max: 254 })
     .withMessage('Email address is too long'),
-  
+
   body('message')
     .trim()
     .isLength({ min: 10, max: 5000 })
@@ -91,7 +91,7 @@ const validateAuthForm = [
     .withMessage('Username must be between 1 and 50 characters')
     .matches(/^[a-zA-Z0-9_\-]+$/)
     .withMessage('Username can only contain letters, numbers, underscores, and hyphens'),
-  
+
   body('password')
     .isLength({ min: 1, max: 200 })
     .withMessage('Password is required')
@@ -105,13 +105,13 @@ const corsOptions = {
       'https://jasoncampbell.dev',
       'https://www.jasoncampbell.dev'
     ];
-    
+
     // IMPORTANT: Allow requests with no origin (same-origin requests, mobile apps, etc.)
     if (!origin) {
       console.log('✅ Allowing request with no origin (same-origin)');
       return callback(null, true);
     }
-    
+
     if (allowedOrigins.includes(origin)) {
       console.log('✅ Allowing request from:', origin);
       callback(null, true);
@@ -164,6 +164,57 @@ app.use(express.urlencoded({ extended: true }));
 
 // Parse JSON data for API requests
 app.use(express.json());
+
+// =============================================================================
+// CLOUDINARY IMAGE PROXY
+// =============================================================================
+// This route intercepts requests for images that originated from Cloudinary
+// and proxies them through your server. This allows your server to add
+// the necessary 'Cross-Origin-Resource-Policy' header, which is required
+// when 'Cross-Origin-Embedder-Policy: require-corp' is active on your site.
+app.get('/cloudinary-proxy/*', async (req, res) => {
+    // req.params[0] captures the dynamic part of the URL after '/cloudinary-proxy/'
+    // For example, if the request is /cloudinary-proxy/v1674954765/picPage/waterView_g4ncz7.jpg
+    // imagePath will be 'v1674954765/picPage/waterView_g4ncz7.jpg'
+    const imagePath = req.params[0];
+    const cloudinaryBaseUrl = 'https://res.cloudinary.com/dijsqclbt/image/upload/';
+    const fullCloudinaryUrl = `${cloudinaryBaseUrl}${imagePath}`;
+
+    try {
+        console.log(`🖼️ Proxying Cloudinary image: ${fullCloudinaryUrl}`);
+        // Fetch the image from Cloudinary
+        const response = await fetch(fullCloudinaryUrl);
+
+        // If Cloudinary's response is not OK (e.g., 404, 500), propagate the error
+        if (!response.ok) {
+            console.error(`❌ Cloudinary returned error ${response.status} for: ${fullCloudinaryUrl}`);
+            return res.status(response.status).send(`Error fetching image from Cloudinary: ${response.statusText}`);
+        }
+
+        // Get the Content-Type header from Cloudinary's response and set it for your client
+        const contentType = response.headers.get('Content-Type');
+        if (contentType) {
+            res.setHeader('Content-Type', contentType);
+        }
+
+        // Set the crucial 'Cross-Origin-Resource-Policy' header to 'cross-origin'
+        // This explicitly allows the browser to embed this resource from your domain
+        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+
+        // Pipe the image data stream directly from Cloudinary to your client's response.
+        // This is efficient as it avoids buffering the entire image in your server's memory.
+        response.body.pipe(res);
+
+    } catch (error) {
+        // Catch any network or other errors during the proxy process
+        console.error('❌ Proxy error for Cloudinary image:', error.message);
+        res.status(500).send('Error loading image via proxy');
+    }
+});
+// =============================================================================
+// END CLOUDINARY IMAGE PROXY
+// =============================================================================
+
 
 //sets the route/home of this project to this file with a request and response
 app.get("/", (req, res) => {
@@ -228,7 +279,7 @@ app.post("/api/login", authLimiter, validateAuthForm, async (req, res) => {
 
   try {
     console.log('🔐 Proxying login request for:', req.body.username);
-    
+
     // Forward request to your auth server
     const response = await fetch('https://backend.jasoncampbell.dev:50003/login', {
       method: 'POST',
@@ -244,17 +295,17 @@ app.post("/api/login", authLimiter, validateAuthForm, async (req, res) => {
 
     // Get the response data
     const data = await response.json();
-    
+
     console.log('✅ Auth server responded with status:', response.status);
-    
+
     // Forward the exact response from auth server
     res.status(response.status).json(data);
-    
+
   } catch (error) {
     console.error('❌ Proxy error during login:', error.message);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      error: 'Authentication service temporarily unavailable' 
+      error: 'Authentication service temporarily unavailable'
     });
   }
 });
@@ -272,7 +323,7 @@ app.post("/api/register", authLimiter, validateAuthForm, async (req, res) => {
 
   try {
     console.log('📝 Proxying registration request for:', req.body.username);
-    
+
     // Forward request to your auth server
     const response = await fetch('https://backend.jasoncampbell.dev:50003/register', {
       method: 'POST',
@@ -288,17 +339,17 @@ app.post("/api/register", authLimiter, validateAuthForm, async (req, res) => {
 
     // Get the response data
     const data = await response.json();
-    
+
     console.log('✅ Auth server responded with status:', response.status);
-    
+
     // Forward the exact response from auth server
     res.status(response.status).json(data);
-    
+
   } catch (error) {
     console.error('❌ Proxy error during registration:', error.message);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      error: 'Authentication service temporarily unavailable' 
+      error: 'Authentication service temporarily unavailable'
     });
   }
 });
@@ -332,14 +383,14 @@ app.post("/contact", contactLimiter, validateContactForm, (req, res) => {
 if (req.body.website) {
   console.log('Bot detected - honeypot field filled:', req.body.website);
   // Silently reject (don't tell the bot why it failed)
-  return res.json({ 
+  return res.json({
     success: true,
-    message: 'Email sent successfully!' 
+    message: 'Email sent successfully!'
   });
 }
 
   const { name, email, message } = req.body;
-  
+
   //Create email content and nice formatting (now with validated and sanitized data)
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -367,13 +418,13 @@ ${message}
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log('Error sending email:', error);
-      return res.status(500).json({ 
-        success: false, 
-        error: 'Failed to send email' 
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to send email'
       });
     } else {
       console.log('Email sent successfully:', info.response);
-      return res.json({ 
+      return res.json({
         success: true,
         message: 'Email sent successfully!'
       });
