@@ -5,15 +5,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-            <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin" />
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin" />
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp" />
     
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,500;0,700;0,900;1,300;1,500;1,700;1,900&display=swap" rel="stylesheet" />
     
-        <title>CatStuff</title>
+    <title>CatStuff</title>
     <link id="-gd-engine-icon" rel="icon" type="image/png" href="index.js.icon.png" />
     <link rel="apple-touch-icon" href="index.js.apple-touch-icon.png"/>
     
@@ -74,7 +73,7 @@
 
         /* ========== NAVIGATION STYLES ========== */
         
-        /* Fixed navigation bar with glassmorphism effect */
+        /* Navigation bar with glassmorphism effect */
         nav {
           position: fixed;
           top: 2rem;
@@ -123,7 +122,7 @@
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 8rem 2rem 4rem;              /* Top padding accounts for fixed nav */
+          padding: 8rem 2rem 4rem;
           gap: 2rem;
           width: 100%;
         }
@@ -137,9 +136,8 @@
         .game-header h1 {
           font-size: 3.5rem;
           font-weight: var(--text-lg);
-          margin-bottom: 0.5rem; /* Reduced margin to bring button closer */
+          margin-bottom: 0.5rem;
           color: var(--text-dark);
-          /* Gradient text effect using brand colors */
           background: linear-gradient(45deg, var(--bg-3), var(--bg-4));
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -314,7 +312,7 @@
 </head>
 <body>
         
-        <nav class="colored-version">
+    <nav class="colored-version">
         <a href="/">Home</a>
         <a href="/resume">Résumé</a>
         <a href="/contact">Contact</a>
@@ -335,10 +333,10 @@
     </section>
 
         
-        <script src="index.js"></script>
+    <script src="index.js"></script>
     <script>
         // Initializes Godot engine with configuration from export process
-        const engine = new Engine({"args":[],"canvasResizePolicy":0,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":6797376,"index.wasm":43699190},"focusCanvas":true,"gdextensionLibs":[]});
+        const engine = new Engine({"args":[],"canvasResizePolicy":0,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":6798240,"index.wasm":43699190},"focusCanvas":true,"gdextensionLibs":[]});
         const canvas = document.getElementById('canvas');
         const gameContainer = document.getElementById('gameContainer');
         
@@ -360,8 +358,6 @@
             canvas.style.position = 'absolute';
             canvas.style.top = '0px';
             canvas.style.left = '0px';
-            
-            console.log(`Canvas logical: 320×180, display: ${containerWidth}×${containerHeight}`);
         }
         
         // Starts Godot game with responsive canvas configuration
@@ -369,8 +365,6 @@
             canvas: canvas,
             focusCanvas: true                    // Automatically focuses canvas for input
         }).then(() => {
-            console.log('CatStuff game loaded with responsive scaling');
-            
             // Sets initial canvas size after game loads
             updateCanvasSize();
             
