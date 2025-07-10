@@ -232,17 +232,13 @@ app.get("/picPage", (req, res) => {
   res.render("picPage.ejs");
 });
 
-//loads the project page
-app.get("/projects", (req, res) => {
-  res.render("projects.ejs");
-});
 
 //loads the resume page
 app.get("/resume", (req, res) => {
   res.render("resume.ejs");
 });
 
-//loads the survival game on the project page
+//loads the survival game 
 app.get("/survival", (req, res) => {
   res.render("survival.ejs");
 });
