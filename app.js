@@ -16,7 +16,7 @@ const nodemailer = require('nodemailer');
 //Imports CORS to control which domains can access the contact form
 const cors = require('cors');
 
-// ADD THIS: Import fetch for making HTTP requests to your auth server
+//Import fetch for making HTTP requests to your auth server
 const fetch = require('node-fetch');
 
 //path file built in with NODE, lets you set file/dir paths
