@@ -39,7 +39,9 @@
       <p>Thanks for reaching out! I'll get back to you soon.</p>
     </div>
 
-    <div class="error-message" id="errorMessage" style="display: <%= typeof query !== 'undefined' && query.error ? 'block' : 'none' %>;">
+    <div class="error-message" 
+    id="errorMessage" 
+    style="display: <%= typeof query !== 'undefined' && query.error ? 'block' : 'none' %>;">
       <h3>Oops! Something went wrong.</h3>
       <% if (typeof query !== 'undefined' && query.error === 'validation') { %>
         <p>Please check your form data:</p>
