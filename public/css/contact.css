@@ -7,14 +7,20 @@
 }
 
 body {
-  background: linear-gradient(135deg, var(--bg-light) 0%, #f5f0e8 50%, #ede5db 100%);
+  background-color: #fef9ef;
+  background: linear-gradient(
+    135deg,
+    var(--bg-light) 0%,
+    #f5f0e8 50%,
+    #ede5db 100%
+  );
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 .contact-container {
-  max-width: 600px;  /* Default size */
+  max-width: 600px; /* Default size */
   width: 100%;
   margin: 120px auto 60px;
   padding: 3rem 2rem;
@@ -55,6 +61,7 @@ h1 {
 
 .contact-form {
   background: rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(235, 231, 223, 0.3);
   border-radius: 25px;
@@ -170,7 +177,11 @@ textarea {
 }
 
 .success-message {
-  background: linear-gradient(45deg, rgba(6, 214, 160, 0.1), rgba(6, 214, 160, 0.05));
+  background: linear-gradient(
+    45deg,
+    rgba(6, 214, 160, 0.1),
+    rgba(6, 214, 160, 0.05)
+  );
   border: 2px solid rgba(6, 214, 160, 0.3);
   color: var(--text-dark);
 }
@@ -181,7 +192,11 @@ textarea {
 }
 
 .error-message {
-  background: linear-gradient(45deg, rgba(251, 86, 7, 0.1), rgba(251, 86, 7, 0.05));
+  background: linear-gradient(
+    45deg,
+    rgba(251, 86, 7, 0.1),
+    rgba(251, 86, 7, 0.05)
+  );
   border: 2px solid rgba(251, 86, 7, 0.3);
   color: var(--text-dark);
 }
@@ -202,9 +217,15 @@ textarea {
 }
 
 @keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.7; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 /* Mobile responsive styles */
